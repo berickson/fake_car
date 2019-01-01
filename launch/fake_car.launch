@@ -1,0 +1,19 @@
+<launch>
+<!-- load the bot into the parameter server -->
+<param name="robot_description" textfile="$(find fake_car)/fake_car.urdf"/>
+<!-- Start Gazebo with an empty world -->
+<include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+<!-- spawn a TortoiseBot in Gazebo, taking the description from the 
+    parameter server-->
+<node name="joint_state_publisher"
+ pkg="joint_state_publisher"
+ type="joint_state_publisher">
+  <param name="use_gui" value="True"/>
+  <param name="rate" value="20"/>
+</node>
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+    args="-param robot_description -urdf -model fake_car" />
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="20.0"/>
+</node>
+</launch>
