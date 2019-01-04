@@ -25,4 +25,5 @@
             <remap from="/joint_staes" to="/fake_car/joint_states">
             </remap>
     </node>
+    <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
 </launch>
