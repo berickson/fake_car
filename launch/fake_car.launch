@@ -1,19 +1,28 @@
 <launch>
-<!-- load the bot into the parameter server -->
-<param name="robot_description" textfile="$(find fake_car)/fake_car.urdf"/>
-<!-- Start Gazebo with an empty world -->
-<include file="$(find gazebo_ros)/launch/empty_world.launch"/>
-<!-- spawn a TortoiseBot in Gazebo, taking the description from the 
-    parameter server-->
-<node name="joint_state_publisher"
- pkg="joint_state_publisher"
- type="joint_state_publisher">
-  <param name="use_gui" value="True"/>
-  <param name="rate" value="20"/>
-</node>
-<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args="-param robot_description -urdf -model fake_car" />
-<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-    <param name="publish_frequency" value="20.0"/>
-</node>
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <!-- see https://github.com/JoshMarino/gazebo_and_ros_control -->
+    <rosparam file="$(find fake_car)/fake_car_control.yaml" command="load"/>
+
+    <!-- load the bot into the parameter server -->
+    <param name="robot_description" textfile="$(find fake_car)/fake_car.urdf"/>
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description -urdf -model fake_car" />
+
+
+    <!-- Start Gazebo with an empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <param name="publish_frequency" value="20.0"/>
+    </node>
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" 
+        ns="/fake_car"
+        args="front_left_wheel_steer_position_controller
+            front_right_wheel_steer_position_controller
+            ">
+            <!--back_left_wheel_velocity_controller-->
+            <remap from="/joint_staes" to="/fake_car/joint_states">
+            </remap>
+    </node>
 </launch>

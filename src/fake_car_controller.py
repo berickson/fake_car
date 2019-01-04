@@ -2,14 +2,12 @@
 
 import rospy
 from std_msgs.msg import Int16
-from gazebo_msgs.srv import SetJointProperties
 
 pub_str = rospy.Publisher('str', Int16, queue_size=1)
 pub_esc = rospy.Publisher('esc', Int16, queue_size=1)
 esc_us = 1500
 str_us = 1500
 
-set_joint_state = rospy.ServiceProxy('gazebo/set_joint_properties')
 
 def esc_callback(data):
     esc_us = data
