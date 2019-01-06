@@ -5,13 +5,17 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64
 from sensor_msgs.msg import Joy
+from bicycle_model import BicycleModel, AckermannModel
 
 steer = 0
 velocity = 0
 
+wheelbase_length = 0.3429 
+front_wheelbase_width = 0.25
+car_model = AckermannModel(wheelbase_length, front_wheelbase_width)
 
-front_right_steer_pub = rospy.Publisher('/fake_car/front_left_wheel_steer_position_controller/command', Float64, queue_size=10)
-front_left_steer_pub = rospy.Publisher('/fake_car/front_right_wheel_steer_position_controller/command', Float64, queue_size=10)
+front_right_steer_pub = rospy.Publisher('/fake_car/front_right_wheel_steer_position_controller/command', Float64, queue_size=10)
+front_left_steer_pub = rospy.Publisher('/fake_car/front_left_wheel_steer_position_controller/command', Float64, queue_size=10)
 
 back_left_speed_pub = rospy.Publisher('/fake_car/back_left_wheel_velocity_controller/command', Float64, queue_size=10)
 back_right_speed_pub = rospy.Publisher('/fake_car/back_right_wheel_velocity_controller/command', Float64, queue_size=10)
@@ -29,8 +33,10 @@ def ackermann_callback(msg):
     rospy.loginfo(rospy.get_caller_id() + "Steering angle %s", msg.drive.steering_angle)
     rospy.loginfo(rospy.get_caller_id() + "Speed: %s", msg.drive.speed)
 
-    front_right_steer_pub.publish(msg.drive.steering_angle)
-    front_left_steer_pub.publish(msg.drive.steering_angle)
+    car_model.set_steer_angle(msg.drive.steering_angle)
+
+    front_right_steer_pub.publish(car_model.get_right_bicycle().get_steer_angle())
+    front_left_steer_pub.publish(car_model.get_left_bicycle().get_steer_angle())
 
     back_left_speed_pub.publish(msg.drive.speed)
     back_right_speed_pub.publish(msg.drive.speed)
@@ -38,8 +44,12 @@ def ackermann_callback(msg):
 def twist_callback(msg):
     ad = AckermannDriveStamped()
     ad.drive.speed = msg.linear.x
-    # hack, need real formula
-    ad.drive.steering_angle = 0 if msg.linear.x == 0 else msg.angular.z / msg.linear.x
+   
+    if msg.linear.x == 0:
+        ad.drive.steering_angle = 0
+    else:
+        car_model.set_rear_curvature(msg.angular.z / msg.linear.x)
+        ad.drive.steering_angle = car_model.get_steer_angle()
     pub.publish(ad)
 
 
