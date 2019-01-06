@@ -12,6 +12,7 @@ velocity = 0
 
 wheelbase_length = 0.3429 
 front_wheelbase_width = 0.25
+rear_wheelbase_width = 0.25
 car_model = AckermannModel(wheelbase_length, front_wheelbase_width)
 
 front_right_steer_pub = rospy.Publisher('/fake_car/front_right_wheel_steer_position_controller/command', Float64, queue_size=10)
@@ -38,8 +39,17 @@ def ackermann_callback(msg):
     front_right_steer_pub.publish(car_model.get_right_bicycle().get_steer_angle())
     front_left_steer_pub.publish(car_model.get_left_bicycle().get_steer_angle())
 
-    back_left_speed_pub.publish(msg.drive.speed)
-    back_right_speed_pub.publish(msg.drive.speed)
+    
+    curvature = car_model.get_rear_curvature()
+    if(curvature == 0):
+        back_left_speed_pub.publish(msg.drive.speed)
+        back_right_speed_pub.publish(msg.drive.speed)
+    else:
+        radius = 1/curvature
+        left_radius = radius - rear_wheelbase_width / 2
+        right_radius = radius + rear_wheelbase_width / 2
+        back_left_speed_pub.publish(msg.drive.speed*left_radius/radius)
+        back_right_speed_pub.publish(msg.drive.speed*right_radius/radius)
 
 def twist_callback(msg):
     ad = AckermannDriveStamped()
