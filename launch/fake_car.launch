@@ -24,7 +24,7 @@
             back_right_wheel_velocity_controller
             ">
             <!---->
-            <remap from="/joint_staes" to="/fake_car/joint_states">
+            <remap from="/joint_states" to="/fake_car/joint_states">
             </remap>
     </node>
     <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
