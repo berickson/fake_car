@@ -276,6 +276,7 @@
     </actuator>
   </transmission>
 
+<!--
   <transmission name="tran1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="front_left_wheel_steer_joint">
@@ -293,6 +294,7 @@
     <actuator name="motor2">
     </actuator>
   </transmission>
+-->
 
 
   <gazebo reference="front_left_wheel">
@@ -333,6 +335,10 @@
       <frameName>world</frameName>
       <xyzOffsets>0 0 0</xyzOffsets>
       <rpyOffsets>0 0 0</rpyOffsets>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin name="fake_car_plugin" filename="libfake_car_plugin.so">
     </plugin>
   </gazebo>
 <!--

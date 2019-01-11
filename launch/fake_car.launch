@@ -15,11 +15,11 @@
         <param name="publish_frequency" value="20.0"/>
     </node>
 
+
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         output="screen" 
         ns="/fake_car"
-        args="front_left_wheel_steer_position_controller
-            front_right_wheel_steer_position_controller
+        args="
             back_left_wheel_velocity_controller
             back_right_wheel_velocity_controller
             ">

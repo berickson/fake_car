@@ -3,7 +3,7 @@
 import rospy
 from ackermann_msgs.msg import AckermannDriveStamped
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Float32
 from sensor_msgs.msg import Joy
 from bicycle_model import BicycleModel, AckermannModel
 
@@ -15,8 +15,8 @@ front_wheelbase_width = 0.25
 rear_wheelbase_width = 0.25
 car_model = AckermannModel(wheelbase_length, front_wheelbase_width)
 
-front_right_steer_pub = rospy.Publisher('/fake_car/front_right_wheel_steer_position_controller/command', Float64, queue_size=10)
-front_left_steer_pub = rospy.Publisher('/fake_car/front_left_wheel_steer_position_controller/command', Float64, queue_size=10)
+front_right_steer_pub = rospy.Publisher('/fake_car/fr_str', Float32, queue_size=10)
+front_left_steer_pub = rospy.Publisher('/fake_car/fl_str', Float32, queue_size=10)
 
 back_left_speed_pub = rospy.Publisher('/fake_car/back_left_wheel_velocity_controller/command', Float64, queue_size=10)
 back_right_speed_pub = rospy.Publisher('/fake_car/back_right_wheel_velocity_controller/command', Float64, queue_size=10)
@@ -31,8 +31,8 @@ def joy_callback(msg):
 
 
 def ackermann_callback(msg):
-    rospy.loginfo(rospy.get_caller_id() + "Steering angle %s", msg.drive.steering_angle)
-    rospy.loginfo(rospy.get_caller_id() + "Speed: %s", msg.drive.speed)
+    #rospy.loginfo(rospy.get_caller_id() + "Steering angle %s", msg.drive.steering_angle)
+    #rospy.loginfo(rospy.get_caller_id() + "Speed: %s", msg.drive.speed)
 
     car_model.set_steer_angle(msg.drive.steering_angle)
 
