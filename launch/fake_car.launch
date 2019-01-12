@@ -29,5 +29,5 @@
     </node>
     <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
     <node name="joy_node" pkg="joy" type="joy_node"/>
-    <node name="fake_car_server" pkg="fake_car" type="fake_car_server.py"/>
+    <!-- <node name="fake_car_server" pkg="fake_car" type="fake_car_server.py"/> -->
 </launch>
