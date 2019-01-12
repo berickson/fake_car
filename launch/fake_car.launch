@@ -1,32 +1,10 @@
 <launch>
-    <!-- Load joint controller configurations from YAML file to parameter server -->
-    <!-- see https://github.com/JoshMarino/gazebo_and_ros_control -->
-    <rosparam file="$(find fake_car)/fake_car_control.yaml" command="load"/>
-
     <!-- load the bot into the parameter server -->
     <param name="robot_description" textfile="$(find fake_car)/fake_car.urdf"/>
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
         args="-param robot_description -urdf -model fake_car" />
 
-
-    <!-- Start Gazebo with an empty world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-        <param name="publish_frequency" value="20.0"/>
-    </node>
-
-
-    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-        output="screen" 
-        ns="/fake_car"
-        args="
-            back_left_wheel_velocity_controller
-            back_right_wheel_velocity_controller
-            ">
-            <!---->
-            <remap from="/joint_states" to="/fake_car/joint_states">
-            </remap>
-    </node>
     <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
     <node name="joy_node" pkg="joy" type="joy_node"/>
     <!-- <node name="fake_car_server" pkg="fake_car" type="fake_car_server.py"/> -->
