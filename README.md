@@ -9,6 +9,7 @@ apt-get install ros-melodic-ackermann-msgs
 source /opt/ros/melodic/setup.bash
 mkdir -p ros_ws/src
 cd ros_ws/src
+git clone git@github.com:ros-drivers/ackermann_msgs.git
 git clone git@github.com:berickson/fake_car.git
 git clone git@github.com:berickson/fake_car_plugin.git
 cd ..
